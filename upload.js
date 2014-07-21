@@ -5,6 +5,7 @@
 var mockup = require('./mockup');
 var logger = require('./logger');
 var fs = require('fs');
+var qs = require('querystring');
 var multiparty = require('multiparty');
 
 var upload = {};
@@ -17,13 +18,14 @@ function handler(context, uploadType) {
     context.stop();
     try {
         var request = context.request;
-        var handler = mockup.load(request);
+        var mockupHandler = mockup.load(request);
 
-        if (handler) {
+        if (mockupHandler) {
             request.pipe = function (dst) {
                 dst.write(request.bodyBuffer);
                 dst.end();
             };
+            var query = qs.parse(request.search.slice(1));
             var form = new multiparty.Form();
             form.parse(request, function(err, fields, files) {
                 if (err) {
@@ -33,23 +35,23 @@ function handler(context, uploadType) {
                     return;
                 }
 
-                var timeout = handler.timeout;
+                var timeout = mockupHandler.timeout;
                 var fileInfo = files.filedata[0];
                 var tmpDir = 'mockup/.tmp/';
-                var tmpPath = '../../' + tmpDir;
 
-                if (!fs.existsSync(tmpPath)) {
-                    fs.mkdirSync(tmpPath);
+                if (!fs.existsSync(tmpDir)) {
+                    fs.mkdirSync(tmpDir);
                 }
-                fs.rename(fileInfo.path, tmpPath + fileInfo.originalFilename);
+                fs.rename(fileInfo.path, tmpDir + fileInfo.originalFilename);
 
                 logger.ok('edp', 'OK', 'File `' + fileInfo.originalFilename + '` is saved');
-                res = {
-                    url: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename
+                var res = {
+                    url: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename,
+                    preview_url: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename
                 };
-                data = handler.response(request.pathname, {
+                var data = mockupHandler.response(request.pathname, {
                     success: 'true',
-                    callback: fields.callback[0],
+                    callback: query.callback || fields.callback[0],
                     fileName: fileInfo.originalFilename,
                     fileType: fileInfo.originalFilename.split('.').pop(),
                     result: res
@@ -84,7 +86,7 @@ function handler(context, uploadType) {
 
 upload.getHandler = function () {
     return handler;
-}
+};
 
 upload.getHandlers = function () {
     return [
