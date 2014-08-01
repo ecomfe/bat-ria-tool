@@ -11,7 +11,23 @@ var multiparty = require('multiparty');
 var upload = {};
 
 upload.getLocation = function () {
-    return /^\/data\/.+\/upload(?:$|\?)/;
+    return function (request) {
+        // 对于非post请求不处理
+        if (!/post/i.test(request.method || '')) {
+            return false;
+        }
+
+        // 对于referer没有ed参数的请求不处理
+        if (!/[?&](?:ed|enable_debug)\b/i.test(request.headers.referer)) {
+            return false;
+        }
+
+        if (!/^\/data\/.+\/upload(?:$|\?)/.test(request.headers.path)) {
+            return false;
+        }
+
+        return true;
+    };
 };
 
 function handler(context, uploadType) {
@@ -94,7 +110,7 @@ upload.getHandlers = function () {
     return [
         handler,
         proxyNoneExists()
-    ]
+    ];
 };
 
 module.exports = exports = upload;
