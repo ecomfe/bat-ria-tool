@@ -42,7 +42,9 @@ function handler(context, uploadType) {
                 if (!fs.existsSync(tmpDir)) {
                     fs.mkdirSync(tmpDir);
                 }
-                fs.rename(fileInfo.path, tmpDir + fileInfo.originalFilename);
+
+                fs.writeFileSync(tmpDir + fileInfo.originalFilename, fs.readFileSync(fileInfo.path));
+                fs.unlinkSync(fileInfo.path);
 
                 logger.ok('edp', 'OK', 'File `' + fileInfo.originalFilename + '` is saved');
                 var res = {
