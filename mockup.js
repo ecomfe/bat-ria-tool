@@ -146,7 +146,7 @@ mockup.getHandlers = function () {
     return [
         handler,
         proxyNoneExists()
-    ]
+    ];
 };
 
 /**
@@ -156,7 +156,7 @@ mockup.getHandlers = function () {
  */
 mockup.ok = function (result) {
     return {
-        success: 'true',
+        success: true,
         result: result || {}
     };
 };
@@ -168,7 +168,7 @@ mockup.ok = function (result) {
  */
 mockup.session = function (result) {
     return {
-        success: 'true',
+        success: true,
         result: result || {
             visitor: {
                 username: '访问者',
@@ -194,7 +194,7 @@ mockup.list = function (result, page) {
     page = page || {};
 
     return {
-        success: 'true',
+        success: true,
         page: {
             totalCount: page.totalCount || 100,
             pageNo: page.pageNo || 1,
@@ -213,7 +213,7 @@ mockup.list = function (result, page) {
  */
 mockup.fail = function (msg) {
     return {
-        success: 'false',
+        success: false,
         message: msg
     };
 };
@@ -224,10 +224,8 @@ mockup.fail = function (msg) {
  * @param {Object} fields 表单项name和失败信息对应关系信息
  */
 mockup.fieldFail = function (fields) {
-    return mockup.failure({
-        message: {
-            field: fields || {}
-        }
+    return mockup.fail({
+        field: fields || {}
     });
 };
 
@@ -237,7 +235,7 @@ mockup.fieldFail = function (fields) {
  * @param {Object} msg 全局失败响应提示信息
  */
 mockup.globalFail = function (msg) {
-    return mockup.failure(msg && msg.toString() || '');
+    return mockup.fail(msg && msg.toString() || '');
 };
 
 /**
