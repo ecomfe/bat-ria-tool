@@ -7,7 +7,6 @@ var css2file = {};
 var fs = require('fs');
 
 function handler(context) {
-    console.log('css2file');
     var conf = context.conf;
     var docRoot  = conf.documentRoot;
     var pathname = context.request.pathname;

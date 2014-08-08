@@ -249,10 +249,14 @@ mockup.iframeCallback = function (script) {
     return [
         '<!doctype html>',
         '<html>',
-            '<meta charset="utf-8" />',
-            '<script>',
-                script,
-            '</script>',
+            '<head>',
+                '<meta charset="utf-8" />',
+            '</head>',
+            '<body>',
+                '<script>',
+                    script,
+                '</script>',
+            '</body>',
         '</html>'
     ].join('');
 };
