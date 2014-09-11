@@ -58,18 +58,20 @@ function handler(context, uploadType) {
                 if (!fs.existsSync(tmpDir)) {
                     fs.mkdirSync(tmpDir);
                 }
-                fs.rename(fileInfo.path, tmpDir + fileInfo.originalFilename);
+
+                fs.writeFileSync(tmpDir + fileInfo.originalFilename, fs.readFileSync(fileInfo.path));
+                fs.unlinkSync(fileInfo.path);
 
                 logger.ok('edp', 'OK', 'File `' + fileInfo.originalFilename + '` is saved');
                 var res = {
                     url: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename,
-                    preview_url: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename
+                    previewUrl: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename,
+                    callback: query.callback || fields.callback[0],
+                    fileName: fileInfo.originalFilename,
+                    type: fileInfo.originalFilename.split('.').pop()
                 };
                 var data = mockupHandler.response(request.pathname, {
                     success: 'true',
-                    callback: query.callback || fields.callback[0],
-                    fileName: fileInfo.originalFilename,
-                    fileType: fileInfo.originalFilename.split('.').pop(),
                     result: res
                 });
 
