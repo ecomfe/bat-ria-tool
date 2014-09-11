@@ -66,12 +66,12 @@ function handler(context, uploadType) {
                 var res = {
                     url: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename,
                     previewUrl: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename,
-                    callback: query.callback || fields.callback[0],
                     fileName: fileInfo.originalFilename,
                     type: fileInfo.originalFilename.split('.').pop()
                 };
                 var data = mockupHandler.response(request.pathname, {
                     success: 'true',
+                    callback: query.callback || fields.callback[0],
                     result: res
                 });
 
