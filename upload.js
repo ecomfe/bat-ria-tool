@@ -65,13 +65,13 @@ function handler(context, uploadType) {
                 logger.ok('edp', 'OK', 'File `' + fileInfo.originalFilename + '` is saved');
                 var res = {
                     url: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename,
-                    preview_url: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename
+                    previewUrl: 'http://' + request.headers.host + '/' + tmpDir + fileInfo.originalFilename,
+                    fileName: fileInfo.originalFilename,
+                    type: fileInfo.originalFilename.split('.').pop()
                 };
                 var data = mockupHandler.response(request.pathname, {
                     success: 'true',
                     callback: query.callback || fields.callback[0],
-                    fileName: fileInfo.originalFilename,
-                    fileType: fileInfo.originalFilename.split('.').pop(),
                     result: res
                 });
 
