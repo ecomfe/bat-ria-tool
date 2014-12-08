@@ -22,7 +22,7 @@ upload.getLocation = function () {
             return false;
         }
 
-        if (!/^\/data\/.+\/upload(?:$|\?)/.test(request.headers.path)) {
+        if (!/^\/data\/.+\/upload(?:$|\?)/.test(request.path)) {
             return false;
         }
 
