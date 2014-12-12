@@ -193,7 +193,7 @@ mockup.session = function (result) {
 mockup.list = function (result, page) {
     page = page || {};
 
-    return {
+    var response = {
         success: true,
         page: {
             totalCount: page.totalCount || 100,
@@ -204,6 +204,12 @@ mockup.list = function (result, page) {
             result: result || []
         }
     };
+    for (var property in page) {
+        if (response.page[property] === undefined) {
+            response.page[property] = page[property];
+        }
+    }
+    return response;
 };
 
 /**
