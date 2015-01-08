@@ -241,7 +241,9 @@ mockup.fieldFail = function (fields) {
  * @param {Object} msg 全局失败响应提示信息
  */
 mockup.globalFail = function (msg) {
-    return mockup.fail(msg && msg.toString() || '');
+    return mockup.fail({
+        global: msg && msg.toString() || ''
+    });
 };
 
 /**
