@@ -4,6 +4,7 @@
  */
 var qs = require('querystring');
 var logger = require('./logger');
+var fs = require('fs');
 
 var mockup = {};
 
@@ -12,11 +13,13 @@ var mockup = {};
  *
  * 对于请求path如果为/hello/world
  * 则对应的mockup数据文件位置为：mockup/hello/world.js
+ * page还需要有一个对应的world.html
  *
  * @param {Object} request 请求对象
- * @return {?Object}
+ * @param {string} [type=script|page] 请求的类型
+ * @return {Mixed}
  */
-mockup.load = function(request) {
+mockup.load = function (request, type) {
     var path = request.pathname.replace(/^\/data/, '') || '';
     var pathSegments = path.split(/\//);
     var notEmptySegments = [];
@@ -27,14 +30,26 @@ mockup.load = function(request) {
     if (notEmptySegments.length > 1) {
         var filePath = notEmptySegments.join('/');
 
-        try {
-            var mockModuleName = '../../mockup/' + filePath;
-            delete require.cache[require.resolve(mockModuleName)];
-            return require(mockModuleName);
+        if (!type || type !== 'page') {
+            try {
+                var mockModuleName = '../../mockup/' + filePath;
+                delete require.cache[require.resolve(mockModuleName)];
+                return require(mockModuleName);
+            }
+            catch (e) {
+                logger.error('edp', 'ERROR', 'Mockup data not found for `' + path + '`');
+                return null;
+            }
         }
-        catch (e) {
-            logger.error('edp', 'ERROR', 'Mockup data not found for `' + path + '`');
-            return null;
+        else {
+            var htmlPagePath = 'mockup/' + filePath + '.html';
+            if (fs.existsSync(htmlPagePath)) {
+                return fs.readFileSync(htmlPagePath);
+            }
+            else {
+                logger.error('edp', 'ERROR', 'Mockup page not found for `' + path + '`');
+                return null;
+            }
         }
     }
     else {
@@ -100,11 +115,11 @@ function handler(context) {
         }
 
         // parse url-encoded post params
-        var reqContentType = context.request.headers[ 'content-type' ];
+        var reqContentType = context.request.headers['content-type'];
         var postData = context.request.bodyBuffer || '';
-        var reqBody = reqContentType.indexOf( 'application/json' ) === 0 ?
-            JSON.parse( postData.toString() ) :
-            qs.parse( postData.toString() );
+        var reqBody = reqContentType.indexOf('application/json') === 0 ?
+            JSON.parse(postData.toString()) :
+            qs.parse(postData.toString());
         var data = reqHandler[reqHandlerKey](path, reqBody, context);
 
         var timeout = reqHandler.timeout;
