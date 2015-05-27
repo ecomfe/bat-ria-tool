@@ -9,7 +9,8 @@
     ],
     "dependencies": {
         "chalk": "~0.4.0",
-        "multiparty": "~3.2.9"
+        "multiparty": "~3.2.9",
+        "path-to-regexp": "~1.0.1"
     },
     "repository": "git://github.com/ecomfe/bat-ria-tool"
 }

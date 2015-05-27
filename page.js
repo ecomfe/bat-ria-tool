@@ -40,9 +40,8 @@ function handler(context) {
     var request = context.request;
 
     try {
-        var fileData = mockup.load(request, 'page');
         var reqHandler = mockup.load(request);
-        if (!fileData || !reqHandler) {
+        if (!reqHandler) {
             context.status = 404;
             context.start();
             return;
@@ -54,9 +53,7 @@ function handler(context) {
         var timeout = reqHandler.timeout;
 
         context.header['Content-Type'] = 'text/html;charset=UTF-8';
-        context.content = reqHandler.response(request.pathname, query, {
-            page: fileData
-        });
+        context.content = reqHandler.response(request.pathname, query);
 
         if (timeout) {
             setTimeout(function () {
