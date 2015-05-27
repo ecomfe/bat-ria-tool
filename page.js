@@ -5,7 +5,6 @@
 var mockup = require('./mockup');
 var logger = require('./logger');
 var qs = require('querystring');
-var path2RegExp = require('path-to-regexp');
 
 var page = {};
 
@@ -26,8 +25,7 @@ page.getLocation = function (location) {
             return location.test(request.pathname);
         }
         else if (typeof location === 'string') {
-            location = path2RegExp(location, [], {sensitive: true});
-            return location && location.test(request.pathname);
+            return request.pathname.indexOf(location) !== -1;
         }
 
         return false;
