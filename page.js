@@ -6,7 +6,6 @@ var mockup = require('./mockup');
 var logger = require('./logger');
 var qs = require('querystring');
 var path2RegExp = require('path-to-regexp');
-var fs = require('fs');
 
 var page = {};
 
