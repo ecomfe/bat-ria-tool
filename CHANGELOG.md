@@ -1,3 +1,6 @@
+* 0.1.5
+    - 新增 `page` 类型的 mockup 处理
+
 * 0.1.4
     - 修正 `upload` 接口中 `request.path` 的判断
     - 去除 `css2file` 的支持，已有 `autocss`，不需要了
