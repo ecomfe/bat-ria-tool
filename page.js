@@ -5,8 +5,6 @@
 var mockup = require('./mockup');
 var logger = require('./logger');
 var qs = require('querystring');
-var path2RegExp = require('path-to-regexp');
-var fs = require('fs');
 
 var page = {};
 
@@ -27,8 +25,7 @@ page.getLocation = function (location) {
             return location.test(request.pathname);
         }
         else if (typeof location === 'string') {
-            location = path2RegExp(location, [], {sensitive: true});
-            return location && location.test(request.pathname);
+            return request.pathname.indexOf(location) !== -1;
         }
 
         return false;
@@ -40,9 +37,8 @@ function handler(context) {
     var request = context.request;
 
     try {
-        var fileData = mockup.load(request, 'page');
         var reqHandler = mockup.load(request);
-        if (!fileData || !reqHandler) {
+        if (!reqHandler) {
             context.status = 404;
             context.start();
             return;
@@ -54,9 +50,7 @@ function handler(context) {
         var timeout = reqHandler.timeout;
 
         context.header['Content-Type'] = 'text/html;charset=UTF-8';
-        context.content = reqHandler.response(request.pathname, query, {
-            page: fileData
-        });
+        context.content = reqHandler.response(request.pathname, query);
 
         if (timeout) {
             setTimeout(function () {

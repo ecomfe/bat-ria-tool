@@ -30,26 +30,14 @@ mockup.load = function (request, type) {
     if (notEmptySegments.length > 1) {
         var filePath = notEmptySegments.join('/');
 
-        if (!type || type !== 'page') {
-            try {
-                var mockModuleName = '../../mockup/' + filePath;
-                delete require.cache[require.resolve(mockModuleName)];
-                return require(mockModuleName);
-            }
-            catch (e) {
-                logger.error('edp', 'ERROR', 'Mockup data not found for `' + path + '`');
-                return null;
-            }
+        try {
+            var mockModuleName = '../../mockup/' + filePath;
+            delete require.cache[require.resolve(mockModuleName)];
+            return require(mockModuleName);
         }
-        else {
-            var htmlPagePath = 'mockup/' + filePath + '.html';
-            if (fs.existsSync(htmlPagePath)) {
-                return fs.readFileSync(htmlPagePath);
-            }
-            else {
-                logger.error('edp', 'ERROR', 'Mockup page not found for `' + path + '`');
-                return null;
-            }
+        catch (e) {
+            logger.error('edp', 'ERROR', 'Mockup data not found for `' + path + '`');
+            return null;
         }
     }
     else {
