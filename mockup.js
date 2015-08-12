@@ -4,7 +4,6 @@
  */
 var qs = require('querystring');
 var logger = require('./logger');
-var fs = require('fs');
 
 var mockup = {};
 
@@ -48,8 +47,16 @@ mockup.load = function (request, type) {
 /**
  * 返回判断是否需要加载mockup的函数
  */
-mockup.getLocation = function () {
+mockup.getLocation = function (options) {
     return function (request) {
+        var options = options || {};
+        if (options.whiteList && options.whiteList.indexOf(request.pathname) !== -1) {
+            return true;
+        }
+        if (options.blackList && options.blackList.indexOf(request.pathname) !== -1) {
+            return false;
+        }
+
         // 对于非`data/`开头的请求不处理
         if (!/^\/data\//i.test(request.pathname)) {
             return false;
@@ -103,7 +110,7 @@ function handler(context) {
         }
 
         // parse url-encoded post params
-        var reqContentType = context.request.headers['content-type'];
+        var reqContentType = context.request.headers['content-type'] || '';
         var postData = context.request.bodyBuffer || '';
         var reqBody = reqContentType.indexOf('application/json') === 0 ?
             JSON.parse(postData.toString()) :
