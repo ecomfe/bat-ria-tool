@@ -1,3 +1,7 @@
+* 0.1.6
+    - 新增 `mockup` handler 的黑/白名单处理
+    - 解决了请求中 `content-type` 为空时 `mockup` 模块未处理的问题
+
 * 0.1.5
     - 新增 `page` 类型的 mockup 处理
 

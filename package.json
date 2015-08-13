@@ -1,7 +1,7 @@
 {
     "name": "bat-ria-tool",
     "description": "Tool modules for edpx-bat-ria and edp-webserver.",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "main": "./bat-ria-tool.js",
     "contributors": [
         { "name": "justineo", "email": "justice360@gmail.com" },
