@@ -45,15 +45,37 @@ mockup.load = function (request, type) {
 };
 
 /**
+ * 检查白名单和黑名单的辅助函数
+ *
+ * @param  {string} path 当前路径
+ * @param  {Array}  list 白名单或黑名单
+ * @return {boolean}     是否命中
+ */
+function checkPath(path, list) {
+    for (var i = 0, l = list.length; i < l; i++) {
+        if ((list[i] instanceof RegExp && list[i].test(path))
+            || list[i].indexOf(path) !== -1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * 返回判断是否需要加载mockup的函数
+ *
+ * @param  {Object} [options] 白名单和黑名单
+ * @return {boolean}          是否命中
  */
 mockup.getLocation = function (options) {
     return function (request) {
-        var options = options || {};
-        if (options.whiteList && options.whiteList.indexOf(request.pathname) !== -1) {
+        options = options || {};
+        if (options.whiteList && options.whiteList.length
+            && checkPath(request.pathname, options.whiteList)) {
             return true;
         }
-        if (options.blackList && options.blackList.indexOf(request.pathname) !== -1) {
+        if (options.blackList && options.blackList.length
+            && checkPath(request.pathname, options.blackList)) {
             return false;
         }
 
